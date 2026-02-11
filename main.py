@@ -311,7 +311,7 @@ class Main(Star):
         lines = []
         for msg in recent_history:
             role = msg.get("role", "unknown")
-            content = msg.get("content", "")
+            content = msg.get("content") or ""
             # 截断过长的内容
             if len(content) > 500:
                 content = content[:500] + "..."
