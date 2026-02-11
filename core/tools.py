@@ -27,7 +27,6 @@ class GetPersonaDetailTool(FunctionTool):
                 "required": ["persona_id"]
             },
             handler=self._run_handler,
-            handler_module_path=__name__
         )
     
     async def _run_handler(self, **kwargs):
@@ -89,7 +88,6 @@ class UpdatePersonaDetailsTool(FunctionTool):
                 "required": ["persona_id"]
             },
             handler=self._run_handler,
-            handler_module_path=__name__
         )
     
     async def _run_handler(self, **kwargs):
