@@ -5,7 +5,7 @@ from astrbot.api.event import filter, AstrMessageEvent, MessageEventResult
 from astrbot.api.provider import LLMResponse
 from astrbot.api import AstrBotConfig, logger, ToolSet
 
-from .core.tools import GetPersonaDetailTool, UpdatePersonaDetailsTool
+from .core.tools import create_get_persona_detail_tool, create_update_persona_details_tool
 
 import json
 
@@ -128,8 +128,8 @@ class Main(Star):
 
     def _build_tool_set(self, event: AstrMessageEvent) -> ToolSet:
         return ToolSet([
-            GetPersonaDetailTool(main_plugin=self, event=event),
-            UpdatePersonaDetailsTool(main_plugin=self, event=event),
+            create_get_persona_detail_tool(main_plugin=self, event=event),
+            create_update_persona_details_tool(main_plugin=self, event=event),
         ])
 
     def _resolve_provider(self, event: AstrMessageEvent) -> tuple[object, Optional[str]]:
