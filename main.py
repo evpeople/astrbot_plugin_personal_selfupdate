@@ -63,7 +63,7 @@ class Main(Star):
         self._persona_cache = {}
 
     @filter.permission_type(filter.PermissionType.ADMIN)
-    @filter.command("persona update", "人格更新")
+    @filter.command("人格更新", "persona update")
     async def persona_self_update(self, event: AstrMessageEvent):
         """
         通过独立的Agent流程，让LLM自我更新人格。
@@ -112,7 +112,7 @@ class Main(Star):
             yield event.plain_result(f"❌ 更新失败: {error}")
 
     @filter.permission_type(filter.PermissionType.ADMIN)
-    @filter.command("persona update advanced", "人格更新高级")
+    @filter.command("人格更新高级", "persona update advanced")
     async def persona_self_update_advanced(self, event: AstrMessageEvent):
         """
         通过独立的Agent流程，让LLM自我更新人格，支持指定使用多少条聊天记录。
