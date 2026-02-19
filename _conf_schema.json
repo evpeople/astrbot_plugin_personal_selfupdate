@@ -3,12 +3,19 @@
         "type": "string",
         "description": "服务提供商",
         "hint": "空则为默认服务提供商",
-        "default": ""
+        "default": "",
+        "_special": "select_provider"
     },
     "model": {
         "type": "string",
         "description": "模型",
         "hint": "请设置为能力较强的模型以得到较好效果",
         "default": ""
+    },
+    "max_backups": {
+        "type": "int",
+        "description": "每个人格保留的最大备份数量",
+        "hint": "-1 表示永久保留所有备份，正整数表示每个人格最多保留的备份份数",
+        "default": 10
     }
 }

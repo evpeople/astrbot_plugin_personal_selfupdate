@@ -1,9 +1,11 @@
 from typing import Optional
+from pathlib import Path
 
 from astrbot.api.star import Star, Context, register
 from astrbot.api.event import filter, AstrMessageEvent, MessageEventResult
 from astrbot.api.provider import LLMResponse
 from astrbot.api import AstrBotConfig, logger, ToolSet
+from astrbot.core.utils.astrbot_path import get_astrbot_data_path
 
 from .core.tools import create_get_persona_detail_tool, create_update_persona_details_tool
 
@@ -62,8 +64,12 @@ class Main(Star):
         self.config = config
         self._persona_cache = {}
 
+        # 备份目录
+        self._backup_dir: Path = get_astrbot_data_path() / "plugin_data" / "personal_selfupdate" / "backups"
+        self._backup_dir.mkdir(parents=True, exist_ok=True)
+
     @filter.permission_type(filter.PermissionType.ADMIN)
-    @filter.command("人格更新", "persona update")
+    @filter.command("人格更新", alias={"persona_update"})
     async def persona_self_update(self, event: AstrMessageEvent):
         """
         通过独立的Agent流程，让LLM自我更新人格。
@@ -112,7 +118,7 @@ class Main(Star):
             yield event.plain_result(f"❌ 更新失败: {error}")
 
     @filter.permission_type(filter.PermissionType.ADMIN)
-    @filter.command("人格更新高级", "persona update advanced")
+    @filter.command("人格更新高级", alias={"persona_update_advanced"})
     async def persona_self_update_advanced(self, event: AstrMessageEvent):
         """
         通过独立的Agent流程，让LLM自我更新人格，支持指定使用多少条聊天记录。
