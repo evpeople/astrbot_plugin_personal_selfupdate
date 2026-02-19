@@ -3,8 +3,9 @@ from astrbot.api import FunctionTool
 from astrbot.api.event import AstrMessageEvent
 from astrbot.api import logger
 import json
+import os
+import glob as glob_mod
 from datetime import datetime
-from pathlib import Path
 
 # Forward declaration for type hinting
 if False:
@@ -57,24 +58,26 @@ def create_get_persona_detail_tool(main_plugin: "Main", event: "AstrMessageEvent
 
 def _save_persona_backup(plugin: "Main", persona_id: str, data: dict) -> None:
     """将旧人格数据保存为 JSON 备份文件，并根据 max_backups 配置清理旧备份。"""
-    backup_dir: Path = plugin._backup_dir
+    backup_dir = plugin._backup_dir
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    backup_file = backup_dir / f"{persona_id}_{timestamp}.json"
+    backup_file = os.path.join(backup_dir, f"{persona_id}_{timestamp}.json")
 
     backup_data = {**data, "backup_time": datetime.now().isoformat()}
-    backup_file.write_text(json.dumps(backup_data, ensure_ascii=False, indent=2), encoding="utf-8")
-    logger.info(f"[Backup] 已备份人格 '{persona_id}' -> {backup_file.name}")
+    with open(backup_file, "w", encoding="utf-8") as f:
+        json.dump(backup_data, f, ensure_ascii=False, indent=2)
+    logger.info(f"[Backup] 已备份人格 '{persona_id}' -> {os.path.basename(backup_file)}")
 
     # 根据配置清理旧备份
     max_backups = int(plugin.config.get("max_backups", 10))
     if max_backups == -1:
         return
 
-    existing = sorted(backup_dir.glob(f"{persona_id}_*.json"), key=lambda f: f.stat().st_mtime)
+    pattern = os.path.join(backup_dir, f"{persona_id}_*.json")
+    existing = sorted(glob_mod.glob(pattern), key=os.path.getmtime)
     while len(existing) > max_backups:
         oldest = existing.pop(0)
-        oldest.unlink()
-        logger.info(f"[Backup] 已清理旧备份 {oldest.name}")
+        os.remove(oldest)
+        logger.info(f"[Backup] 已清理旧备份 {os.path.basename(oldest)}")
 
 
 def create_update_persona_details_tool(main_plugin: "Main", event: "AstrMessageEvent") -> FunctionTool:

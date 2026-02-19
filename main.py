@@ -1,5 +1,6 @@
 from typing import Optional
-from pathlib import Path
+import os
+import json
 
 from astrbot.api.star import Star, Context, register
 from astrbot.api.event import filter, AstrMessageEvent, MessageEventResult
@@ -8,8 +9,6 @@ from astrbot.api import AstrBotConfig, logger, ToolSet
 from astrbot.core.utils.astrbot_path import get_astrbot_data_path
 
 from .core.tools import create_get_persona_detail_tool, create_update_persona_details_tool
-
-import json
 
 SYSTEM_PROMPT_TEMPLATE = """你是人格配置专家，负责根据用户要求更新 AI 人格设定。
 可用工具：
@@ -65,8 +64,8 @@ class Main(Star):
         self._persona_cache = {}
 
         # 备份目录
-        self._backup_dir: Path = Path(get_astrbot_data_path()) / "plugin_data" / "personal_selfupdate" / "backups"
-        self._backup_dir.mkdir(parents=True, exist_ok=True)
+        self._backup_dir: str = os.path.join(get_astrbot_data_path(), "plugin_data", "personal_selfupdate", "backups")
+        os.makedirs(self._backup_dir, exist_ok=True)
 
     @filter.permission_type(filter.PermissionType.ADMIN)
     @filter.command("人格更新", alias={"persona_update"})
