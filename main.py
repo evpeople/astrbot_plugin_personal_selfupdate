@@ -65,7 +65,7 @@ class Main(Star):
         self._persona_cache = {}
 
         # 备份目录
-        self._backup_dir: Path = get_astrbot_data_path() / "plugin_data" / "personal_selfupdate" / "backups"
+        self._backup_dir: Path = Path(get_astrbot_data_path()) / "plugin_data" / "personal_selfupdate" / "backups"
         self._backup_dir.mkdir(parents=True, exist_ok=True)
 
     @filter.permission_type(filter.PermissionType.ADMIN)
